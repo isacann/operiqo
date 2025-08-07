@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Operigo Automation</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      var vapiInstance = null;
+      
+      const assistant = "06d65128-a06d-45a4-b111-70af74522759";
+      const apiKey = "a4c4a7b4-ea9d-4a94-8514-3ef55db999ef";
+      const buttonConfig = {
+        position: "bottom-right",
+        offset: "40px",
+        width: "60px",
+        height: "60px",
+        color: "#FFFFFF",
+        idle: { 
+          title: "Sesli Yardım Başlat", 
+          icon: "/vapi-robot-icon.svg",
+          color: "#FFFFFF"
+        },
+        loading: { 
+          title: "Bağlanıyor…",
+          color: "#F8F8F8"
+        },
+        active: { 
+          title: "Aramayı bitir",
+          color: "#F0F0F0"
+        },
+      };
+      (function (d, t) {
+        var g = document.createElement(t), s = d.getElementsByTagName(t)[0];
+        g.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+        g.defer = true;
+        g.async = true;
+        s.parentNode.insertBefore(g, s);
+        g.onload = function () {
+          vapiInstance = window.vapiSDK.run({
+            apiKey: apiKey,
+            assistant: assistant,
+            config: buttonConfig,
+          });
+          
+          // Vapi butonunun z-index'ini düzelt
+          setTimeout(function() {
+            // Farklı seçicilerle Vapi butonunu bul
+            var vapiButton = document.querySelector('[data-vapi-button]') ||
+                           document.querySelector('.vapi-button') ||
+                           document.querySelector('.vapi-widget') ||
+                           document.querySelector('[class*="vapi"]') ||
+                           document.querySelector('div[style*="position: fixed"]');
+            
+            if (vapiButton) {
+              vapiButton.style.zIndex = '9999';
+              vapiButton.style.position = 'fixed';
+              console.log('Vapi buton z-index düzeltildi');
+            } else {
+              // Eğer bulunamazsa, tüm fixed position elementlerini kontrol et
+              var allElements = document.querySelectorAll('*');
+              for (var i = 0; i < allElements.length; i++) {
+                var element = allElements[i];
+                var computedStyle = window.getComputedStyle(element);
+                if (computedStyle.position === 'fixed' && 
+                    element.innerHTML && 
+                    element.innerHTML.includes('svg')) {
+                  element.style.zIndex = '9999';
+                  console.log('Vapi buton (alternatif yöntem) z-index düzeltildi');
+                  break;
+                }
+              }
+            }
+          }, 1000);
+        };
+      })(document, "script");
+    </script>
+    
+    <!-- Cal element-click embed code begins -->
+    <script type="text/javascript">
+      (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+    Cal("init", "tanısma-toplantısı", {origin:"https://app.cal.com"});
+
+    Cal.ns["tanısma-toplantısı"]("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
+    </script>
+    <!-- Cal element-click embed code ends -->
+  </body>
+</html>
